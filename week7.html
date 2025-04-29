@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Modern Tech Showcase</title>
+    <style>
+        /* enhanced-styles.css */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f5f5f5; /* Light gray background */
+            color: #333;
+            transition: background-color 0.3s ease-in-out; /* Smooth body background transition */
+        }
+
+        #settingsPanel {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 10; /* Ensure it's above other elements */
+        }
+
+        #themeSwitcher {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        #themeSwitcher label {
+            font-size: 0.9em;
+        }
+
+        #themeSwitcher button {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.85em;
+            transition: opacity 0.2s ease-in-out;
+        }
+
+        #themeSwitcher button:hover {
+            opacity: 0.8;
+        }
+
+        #lightTheme {
+            background-color: #eee;
+            color: #333;
+        }
+
+        #darkTheme {
+            background-color: #333;
+            color: #eee;
+        }
+
+        #interactiveContainer {
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            padding: 30px;
+            text-align: center;
+        }
+
+        .interactiveElement {
+            width: 120px;
+            height: 120px;
+            background-color: #64b5f6; /* Blue base */
+            margin: 25px auto;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.1em;
+            cursor: grab;
+            -webkit-user-select: none; /* Prevent text selection during drag on Safari */
+            user-select: none; /* Prevent text selection during drag */
+            /* Enhanced Transitions */
+            transition: background-color 0.4s cubic-bezier(0.25, 0.8, 0.25, 1),
+                        transform 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55),
+                        box-shadow 0.3s ease-in-out;
+        }
+
+        .interactiveElement:hover {
+            background-color: #42a5f5; /* Darker blue on hover */
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        .interactiveElement:active {
+            transform: scale(0.95); /* Slight shrink on active (mouse down) */
+            cursor: grabbing;
+        }
+
+        #actionButton {
+            padding: 12px 24px;
+            background-color: #26a69a; /* Teal button */
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s ease-in-out, transform 0.2s ease-out;
+        }
+
+        #actionButton:hover {
+            background-color: #009688; /* Darker teal on hover */
+            transform: translateY(-2px); /* Slight lift on hover */
+        }
+
+        /* Enhanced CSS Animation: Keyframe with more steps */
+        @keyframes fancyPulse {
+            0% { transform: scale(1); opacity: 1; border-color: #64b5f6; }
+            30% { transform: scale(1.15); opacity: 0.8; border-color: #42a5f5; }
+            60% { transform: scale(1.05); opacity: 0.9; border-color: #64b5f6; }
+            100% { transform: scale(1); opacity: 1; border-color: #64b5f6; }
+        }
+
+        .fancyPulsing {
+            animation: fancyPulse 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+            border: 3px solid transparent; /* Add border for visual effect during pulse */
+        }
+
+        #interactionFeedback {
+            margin-top: 20px;
+            font-size: 0.95em;
+            color: #777;
+            min-height: 20px; /* Prevent layout shift */
+        }
+    </style>
+</head>
+<body>
+    <div id="settingsPanel">
+        <div id="themeSwitcher">
+            <label>Theme:</label>
+            <button id="lightTheme">Light</button>
+            <button id="darkTheme">Dark</button>
+        </div>
+    </div>
+
+    <div id="interactiveContainer">
+        <h2>Explore Interactions</h2>
+        <div id="interactiveElement" class="interactiveElement" draggable="true">Drag Me</div>
+        <button id="actionButton">Start Fancy Animation</button>
+        <div id="interactionFeedback"></div>
+    </div>
+
+    <script>
+        // enhanced-script.js
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const body = document.body;
+            const interactiveElement = document.getElementById('interactiveElement');
+            const actionButton = document.getElementById('actionButton');
+            const interactionFeedback = document.getElementById('interactionFeedback');
+            const lightThemeButton = document.getElementById('lightTheme');
+            const darkThemeButton = document.getElementById('darkTheme');
+            const localStorageKey = 'enhancedInteraction';
+            const themeStorageKey = 'preferredTheme';
+
+            // --- Theme Management with Local Storage ---
+
+            const setTheme = (theme) => {
+                body.dataset.theme = theme; // Using data attribute for more flexible styling
+                localStorage.setItem(themeStorageKey, theme);
+                body.style.backgroundColor = theme === 'dark' ? '#333' : '#f5f5f5';
+                body.style.color = theme === 'dark' ? '#eee' : '#333';
+            };
+
+            const getStoredTheme = () => localStorage.getItem(themeStorageKey) || 'light';
+            setTheme(getStoredTheme()); // Apply theme on load
+
+            lightThemeButton.addEventListener('click', () => setTheme('light'));
+            darkThemeButton.addEventListener('click', () => setTheme('dark'));
+
+            // --- Enhanced Local Storage Functions ---
+
+            const storeInteractionData = (data) => {
+                try {
+                    localStorage.setItem(localStorageKey, JSON.stringify(data));
+                    console.log('Interaction data stored:', data);
+                } catch (error) {
+                    console.error('Error storing interaction data:', error);
+                }
+            };
+
+            const retrieveInteractionData = () => {
+                try {
+                    const storedData = localStorage.getItem(localStorageKey);
+                    return storedData ? JSON.parse(storedData) : {};
+                } catch (error) {
+                    console.error('Error retrieving interaction data:', error);
+                    return {};
+                }
+            };
+
+            let interactionState = retrieveInteractionData();
+
+            const updateFeedback = (message) => {
+                interactionFeedback.textContent = message;
+            };
+
+            // --- Enhanced CSS Transitions and Hover Effects ---
+
+            interactiveElement.addEventListener('mouseover', () => {
+                interactiveElement.style.backgroundColor = '#42a5f5';
+                storeInteractionData({ ...interactionState, hovered: true, lastAction: 'mouseover' });
+                updateFeedback('Element hovered.');
+            });
+
+            interactiveElement.addEventListener('mouseout', () => {
+                interactiveElement.style.backgroundColor = '#64b5f6';
+                storeInteractionData({ ...interactionState, hovered: false, lastAction: 'mouseout' });
+                updateFeedback('Mouse left the element.');
+            });
+
+            interactiveElement.addEventListener('mousedown', () => {
+                interactiveElement.classList.add('active');
+                updateFeedback('Element activated (mouse down).');
+            });
+
+            interactiveElement.addEventListener('mouseup', () => {
+                interactiveElement.classList.remove('active');
+                updateFeedback('Element deactivated (mouse up).');
+            });
+
+            // --- Enhanced CSS Animation Triggered by JavaScript ---
+
+            const startFancyAnimation = () => {
+                interactiveElement.classList.add('fancyPulsing');
+                storeInteractionData({ ...interactionState, animated: true, lastAction: 'animation started' });
+                updateFeedback('Fancy animation started!');
+
+                // Remove the class after the animation duration (adjust as needed based on your @keyframes)
+                setTimeout(() => {
+                    interactiveElement.classList.remove('fancyPulsing');
+                    storeInteractionData({ ...interactionState, animated: false, lastAction: 'animation finished' });
+                    updateFeedback('Fancy animation finished.');
+                }, 2000); // Matches the animation duration (approximately)
+            };
+
+            actionButton.addEventListener('click', startFancyAnimation);
+
+            // --- Advanced JavaScript: Drag and Drop Functionality ---
+
+            let isDragging = false;
+            let offsetX, offsetY;
+
+            interactiveElement.addEventListener('dragstart', (e) => {
+                isDragging = true;
+                interactiveElement.style.opacity = '0.7'; // Visual feedback
+                offsetX = e.clientX - interactiveElement.getBoundingClientRect().left;
+                offsetY = e.clientY - interactiveElement.getBoundingClientRect().top;
+                updateFeedback('Dragging started...');
+            });
+
+            document.addEventListener('dragover', (e) => {
+                if (isDragging) {
+                    e.preventDefault(); // Allow drop
+                }
+            });
+
+            document.addEventListener('drop', (e) => {
+                if (isDragging) {
+                    isDragging = false;
+                    interactiveElement.style.opacity = '1';
+                    const x = e.clientX - offsetX;
+                    const y = e.clientY - offsetY;
+                    interactiveElement.style.left = `${x}px`;
+                    interactiveElement.style.top = `${y}px`;
+                    interactiveElement.style.position = 'absolute'; // Change to absolute positioning
+                    storeInteractionData({ ...interactionState, dragged: true, lastPosition: { x, y }, lastAction: 'dropped' });
+                    updateFeedback(`Element dropped at X: ${x}, Y: ${y}.`);
+                }
+            });
+
+            interactiveElement.addEventListener('dragend', () => {
+                if (isDragging) {
+                    isDragging = false;
+                    interactiveElement.style.opacity = '1';
+                    updateFeedback('Dragging ended.');
+                }
+            });
+
+            // --- Advanced JavaScript: Debouncing for Optimized Event Handling ---
+
+            const debouncedHoverFeedback = debounce((message) => {
+                updateFeedback(message);
+            }, 200); // 200ms delay
+
+            interactiveElement.addEventListener('mousemove', () => {
+                if (!isDragging) {
+                    debouncedHoverFeedback('Mouse moving over the element.');
+                }
+            });
+
+            // Debounce function
+            function debounce(func, delay) {
+                let timeoutId;
+                return function(...args) {
+                    clearTimeout(timeoutId);
+                    timeoutId = setTimeout(() => {
+                        func.apply(this, args);
+                    }, delay);
+                };
+            }
+        });
+    </script>
+</body>
+</html>

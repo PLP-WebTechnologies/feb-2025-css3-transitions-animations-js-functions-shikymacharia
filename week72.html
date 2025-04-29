@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Modern Tech Showcase</title>
+    <style>
+        /* enhanced-styles.css */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f5f5f5; /* Light gray background */
+            color: #333;
+            transition: background-color 0.3s ease-in-out; /* Smooth body background transition */
+            overflow-x: hidden; /* Prevent horizontal scrollbar for car animation */
+
+        #settingsPanel {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 10; /* Ensure it's above other elements */
+        }
+
+        #themeSwitcher {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        #themeSwitcher label {
+            font-size: 0.9em;
+        }
+
+        #themeSwitcher button {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.85em;
+            transition: opacity 0.2s ease-in-out;
+        }
+
+        #themeSwitcher button:hover {
+            opacity: 0.8;
+        }
+
+        #lightTheme {
+            background-color: #eee;
+            color: #333;
+        }
+
+        #darkTheme {
+            background-color: #333;
+            color: #eee;
+        }
+
+        #interactiveContainer {
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            padding: 30px;
+            text-align: center;
+            position: relative; /* For positioning the car and dragged element */
+            overflow: hidden; /* Clip the car when it moves out */
+            min-height: 300px; /* Ensure enough space */
+        }
+
+        .interactiveElement {
+            width: 120px;
+            height: 120px;
+            background-color: #64b5f6; /* Blue base */
+            margin: 25px auto;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.1em;
+            cursor: grab;
+            -webkit-user-select: none; /* Prevent text selection during drag on Safari */
+            user-select: none; /* Prevent text selection during drag */
+            position: relative; /* Needed for the 'dragging' and 'hovering' class animations */
+            /* Enhanced Transitions */
+            transition: background-color 0.3s cubic-bezier(0.25, 0.8, 0.25, 1),
+                        transform 0.2s cubic-bezier(0.68, -0.55, 0.27, 1.55),
+                        box-shadow 0.2s ease-in-out,
+                        opacity 0.2s ease-in-out; /* Add opacity transition */
+        }
+
+        .interactiveElement:hover {
+            background-color: #42a5f5; /* Darker blue on hover */
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+            animation: subtleRotate 1s linear infinite alternate; /* New hover animation */
+            opacity: 1; /* Ensure it's visible on hover */
+            display: flex; /* Ensure it's displayed */
+        }
+
+        .interactiveElement:active {
+            transform: scale(0.95); /* Slight shrink on active (mouse down) */
+            cursor: grabbing;
+            animation: none; /* Disable hover animation when active */
+        }
+
+        /* Animation while dragging */
+        @keyframes dragFeedback {
+            0% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(5deg) scale(1.05); }
+            100% { transform: rotate(0deg) scale(1); }
+        }
+
+        .dragging {
+            opacity: 0.7; /* Visual feedback while dragging */
+            animation: dragFeedback 0.3s ease-in-out infinite alternate; /* Subtle animation */
+            cursor: grabbing;
+            display: flex; /* Ensure it's displayed while dragging */
+        }
+
+        /* New animation for hover */
+        @keyframes subtleRotate {
+            from { transform: rotate(-2deg); }
+            to { transform: rotate(2deg); }
+        }
+
+        #actionButton {
+            padding: 12px 24px;
+            background-color: #26a69a; /* Teal button */
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s ease-in-out, transform 0.2s ease-out;
+        }
+
+        #actionButton:hover {
+            background-color: #009688; /* Darker teal on hover */
+            transform: translateY(-2px); /* Slight lift on hover */
+            transition: background-color 0.3s ease-in-out, transform 0.2s ease-out; /* Smooth transition */
+            animation: hoverPulse 0.5s ease-in-out infinite alternate; /* Add pulsing animation */
+        }
+
+        @keyframes hoverPulse {
+            from { transform: translateY(-2px) scale(1); }
+            to { transform: translateY(-4px) scale(1.05); }
+        }
+        }
+
+        /* Enhanced CSS Animation: Keyframe with more steps */
+        @keyframes fancyPulse {
+            0% { transform: scale(1); opacity: 1; border-color: #64b5f6; }
+            30% { transform: scale(1.15); opacity: 0.8; border-color: #42a5f5; }
+            60% { transform: scale(1.05); opacity: 0.9; border-color: #64b5f6; }
+            100% { transform: scale(1); opacity: 1; border-color: #64b5f6; }
+        }
+
+        .fancyPulsing {
+            animation: fancyPulse 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+            border: 3px solid transparent; /* Add border for visual effect during pulse */
+        }
+
+        #interactionFeedback {
+            margin-top: 20px;
+            font-size: 0.95em;
+            color: #777;
+            min-height: 20px; /* Prevent layout shift */
+            transform: translateY(10px); /* Add a slight downward shift */
+        }
+
+        /* Car Styling and Animation */
+        #movingCar {
+            position: absolute;
+            bottom: 20px;
+            left: -100px; /* Start off-screen */
+            width: 80px;
+            height: 40px;
+            background-color: #f44336; /* Red car */
+            border-radius: 5px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        #movingCar::before { /* Car body shape */
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 10px;
+            width: 60px;
+            height: 20px;
+            background-color: #e53935;
+            border-radius: 5px 5px 0 0;
+        }
+
+        .wheel {
+            width: 16px;
+            height: 16px;
+            background-color: #333;
+            border-radius: 50%;
+            margin: 0 5px 5px 5px;
+        }
+
+        @keyframes drive {
+            0% { transform: translateX(-100px); }
+            100% { transform: translateX(calc(100% + 100px)); } /* Move across the container */
+        }
+
+        .driving {
+            animation: drive 5s linear infinite; /* Adjust duration as needed */
+        }
+    </style>
+</head>
+<body>
+    <div id="settingsPanel">
+        <div id="themeSwitcher">
+            <label>Theme:</label>
+            <button id="lightTheme">Light</button>
+            <button id="darkTheme">Dark</button>
+        </div>
+    </div>
+
+    <div id="interactiveContainer">
+        <h2>Explore Interactions</h2>
+        <div id="interactiveElement" class="interactiveElement">Drag Me</div>
+        <button id="actionButton">Start Fancy Animation</button>
+        <div id="interactionFeedback"></div>
+        <div id="movingCar">
+            <div class="wheel"></div>
+            <div class="wheel"></div>
+        </div>
+    </div>
+
+    <script>
+        // enhanced-script.js
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const body = document.body;
+            const interactiveElement = document.getElementById('interactiveElement');
+            const actionButton = document.getElementById('actionButton');
+            const interactionFeedback = document.getElementById('interactionFeedback');
+            const lightThemeButton = document.getElementById('lightTheme');
+            const darkThemeButton = document.getElementById('darkTheme');
+            const movingCar = document.getElementById('movingCar');
+            const localStorageKey = 'enhancedInteraction';
+            const themeStorageKey = 'preferredTheme';
+            const carAnimationKey = 'carAnimationState';
+
+            // --- Theme Management with Local Storage ---
+            const setTheme = (theme) => {
+                body.dataset.theme = theme;
+                localStorage.setItem(themeStorageKey, theme);
+                body.style.backgroundColor = theme === 'dark' ? '#333' : '#f5f5f5';
+                body.style.color = theme === 'dark' ? '#eee' : '#333';
+            };
+
+            const getStoredTheme = () => localStorage.getItem(themeStorageKey) || 'light';
+            setTheme(getStoredTheme());
+
+            lightThemeButton.addEventListener('click', () => setTheme('light'));
+            darkThemeButton.addEventListener('click', () => setTheme('dark'));
+
+            // --- Enhanced Local Storage Functions ---
+            const storeInteractionData = (data) => {
+                try {
+                    localStorage.setItem(localStorageKey, JSON.stringify(data));
+                    console.log('Interaction data stored:', data);
+                } catch (error) {
+                    console.error('Error storing interaction data:', error);
+                }
+            };
+
+            const retrieveInteractionData = () => {
+                try {
+                    const storedData = localStorage.getItem(localStorageKey);
+                    return storedData ? JSON.parse(storedData) : {};
+                } catch (error) {
+                    console.error('Error retrieving interaction data:', error);
+                    return {};
+                }
+            };
+
+            let interactionState = retrieveInteractionData();
+
+            const updateFeedback = (message) => {
+                interactionFeedback.textContent = message;
+            };
+
+            // --- Enhanced CSS Transitions and Hover Effects ---
+            interactiveElement.addEventListener('mouseover', () => {
+                interactiveElement.style.backgroundColor = '#42a5f5';
+                storeInteractionData({ ...interactionState, hovered: true, lastAction: 'mouseover' });
+                updateFeedback('Element hovered.');
+            });
+
+            interactiveElement.addEventListener('mouseout', () => {
+                interactiveElement.style.backgroundColor = '#64b5f6';
+                interactiveElement.style.animation = ''; // Remove hover animation on mouseout
+                interactiveElement.style.animation = 'fancyPulse 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite'; // Add pulse animation
+                storeInteractionData({ ...interactionState, hovered: false, lastAction: 'mouseout' });
+                updateFeedback('Mouse left the element.');
+            });
+
+            interactiveElement.addEventListener('mousedown', () => {
+                interactiveElement.classList.add('active');
+                interactiveElement.style.animation = ''; // Remove hover animation on mousedown
+                interactiveElement.style.animation = 'subtleRotate 1s linear infinite alternate'; // Apply hover animation
+                updateFeedback('Element activated (mouse down).');
+            });
+
+            interactiveElement.addEventListener('mouseup', () => {
+                interactiveElement.classList.remove('active');
+                updateFeedback('Element deactivated (mouse up).');
+            });
+
+            // --- Enhanced CSS Animation Triggered by JavaScript ---
+            const startFancyAnimation = () => {
+                interactiveElement.classList.add('fancyPulsing');
+                storeInteractionData({ ...interactionState, animated: true, lastAction: 'animation started' });
+                updateFeedback('Fancy animation started!');
+
+                setTimeout(() => {
+                    interactiveElement.classList.remove('fancyPulsing');
+                    storeInteractionData({ ...interactionState, animated: false, lastAction: 'animation finished' });
+                    updateFeedback('Fancy animation finished.');
+                }, 2000);
+            };
+
+            actionButton.addEventListener('click', startFancyAnimation);
+
+            // --- Advanced JavaScript: Drag and Drop Functionality with Visual Feedback ---
+            let isDragging = false;
+            let offsetX, offsetY;
+
+            interactiveElement.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                interactiveElement.classList.add('dragging'); // Apply dragging style
+                interactiveElement.style.animation = ''; // Remove hover animation on drag start
+                offsetX = e.clientX - interactiveElement.getBoundingClientRect().left;
+                offsetY = e.clientY - interactiveElement.getBoundingClientRect().top;
+                updateFeedback('Dragging started...');
+                interactiveElement.style.cursor = 'grabbing'; // Change cursor
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                const x = e.clientX - offsetX;
+                const y = e.clientY - offsetY;
+                interactiveElement.style.left = `${x}px`;
+                interactiveElement.style.top = `${y}px`;
+                interactiveElement.style.position = 'absolute'; // Ensure it moves freely
+            });
+
+            document.addEventListener('mouseup', () => {
+                if (!isDragging) return;
+                isDragging = false;
+                interactiveElement.classList.remove('dragging'); // Remove dragging style
+                interactiveElement.style.cursor = 'grab'; // Reset cursor
+                const finalLeft = interactiveElement.style.left;
+                const finalTop = interactiveElement.style.top;
+                storeInteractionData({ ...interactionState, dragged: true, lastPosition: { left: finalLeft, top: finalTop }, lastAction: 'dropped' });
+                updateFeedback(`Element dropped at Left: ${finalLeft}, Top: ${finalTop}.`);
+            });
+
+            // --- Advanced JavaScript: Debouncing for Optimized Event Handling ---
+            const debouncedHoverFeedback = debounce((message) => {
+                updateFeedback(message);
+            }, 200);
+
+            interactiveElement.addEventListener('mousemove', (e) => {
+                if (!isDragging && e.buttons === 0) { // Only show hover feedback when not dragging and no mouse button pressed
+                    debouncedHoverFeedback('Mouse moving over the element.');
+                }
+            });
+
+            function debounce(func, delay) {
+                let timeoutId;
+                return function(...args) {
+                    clearTimeout(timeoutId);
+                    timeoutId = setTimeout(() => {
+                        func.apply(this, args);
+                    }, delay);
+                };
+            }
+
+            // --- Moving Car Animation ---
+
+            const startCarAnimation = () => {
+                movingCar.classList.add('driving');
+                localStorage.setItem(carAnimationKey, 'running');
+                console.log('Car animation started.');
+            };
+
+            const stopCarAnimation = () => {
+                movingCar.classList.remove('driving');
+                localStorage.setItem(carAnimationKey, 'stopped');
+                console.log('Car animation stopped.');
+            };
+
+            if (localStorage.getItem(carAnimationKey) === 'running') {
+                startCarAnimation();
+            } else {
+                setTimeout(startCarAnimation, 1000);
+            }
+        });
+    </script>
+</body>
+</html>
